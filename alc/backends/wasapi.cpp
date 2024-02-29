@@ -1904,10 +1904,15 @@ no_spatial:
 
 #if !defined(ALSOFT_UWP)
     const EndpointFormFactor formfactor{GetDeviceFormfactor(mMMDev.get())};
-    mDevice->Flags.set(DirectEar, (formfactor == Headphones || formfactor == Headset));
+
+    if (mDevice->DeviceName.find("Headphones") != std::string::npos)
+        TRACE("Headphones detected.\n");
+
+    mDevice->Flags.set(DirectEar, (formfactor == Headphones || formfactor == Headset || (mDevice->DeviceName.find("Headphones") != std::string::npos)));
 #else
     mDevice->Flags.set(DirectEar, false);
 #endif
+
     setDefaultWFXChannelOrder();
 
     hr = audio.mClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_EVENTCALLBACK,
