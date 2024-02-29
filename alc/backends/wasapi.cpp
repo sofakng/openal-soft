@@ -1160,8 +1160,12 @@ HRESULT WasapiPlayback::resetProxy()
     mFormat = OutputType;
 
     const EndpointFormFactor formfactor{get_device_formfactor(mMMDev.get())};
-    mDevice->Flags.set(DirectEar, (formfactor == Headphones || formfactor == Headset));
 
+    if (mDevice->DeviceName.find("Headphones") != std::string::npos)
+        TRACE("Headphones detected.\n");
+
+    mDevice->Flags.set(DirectEar, (formfactor == Headphones || formfactor == Headset || (mDevice->DeviceName.find("Headphones") != std::string::npos)));
+    
     setDefaultWFXChannelOrder();
 
     hr = mClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_EVENTCALLBACK,
